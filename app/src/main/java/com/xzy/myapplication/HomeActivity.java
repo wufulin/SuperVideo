@@ -1,13 +1,25 @@
 package com.xzy.myapplication;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class HomeActivity extends AppCompatActivity {
+import com.xzy.myapplication.base.BaseActivity;
+
+public class HomeActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+    protected void initData() {
+        //TODO
+    }
+
+    @Override
+    protected void initView() {
+        setSupportActionBar();
+        setActionBarIcon(R.drawable.ic_drawer_home);
+        setTitle("首页");
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_home;
     }
 }
