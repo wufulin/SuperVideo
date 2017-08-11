@@ -1,6 +1,8 @@
 package com.xzy.myapplication;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -8,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +20,8 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
 
     private List<View> mViewList;
     private ViewPager mViewPager;
+    private ImageView[] mDotList;
+    private int mLastPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +29,18 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
         setContentView(R.layout.activity_guide);
         initView();
         initViewPager();
+        initDots();
+    }
+
+    private void initDots() {
+        LinearLayout dotsLayout = (LinearLayout)findViewById(R.id.ll_dots_layout);
+        mDotList = new ImageView[mViewList.size()];
+        for (int i = 0; i < mViewList.size(); i++) {
+            mDotList[i] = (ImageView)dotsLayout.getChildAt(i);
+            mDotList[i].setEnabled(false);
+        }
+        mDotList[0].setEnabled(true);
+        mLastPosition = 0;
     }
 
     private void initViewPager() {
@@ -47,7 +65,13 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
 
     @Override
     public void onPageSelected(int position) {
+        setCurrentDotPosition(position);
+    }
 
+    private void setCurrentDotPosition(int position) {
+        mDotList[position].setEnabled(true);
+        mDotList[mLastPosition].setEnabled(false);
+        mLastPosition = position;
     }
 
     @Override
@@ -71,6 +95,16 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
             if(mImageViewList != null && mImageViewList.size() >= 0) {
                 View view = mImageViewList.get(position);
                 container.addView(view);
+                if(position == mImageViewList.size() - 1) {
+                    ImageView imageView = (ImageView) view.findViewById(R.id.iv_start);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startHomeActivity();
+                            setGuided();
+                        }
+                    });
+                }
                 return view;
             }
             return null;
@@ -95,5 +129,18 @@ public class GuideActivity extends AppCompatActivity implements ViewPager.OnPage
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
+    }
+
+    private void setGuided() {
+        SharedPreferences sp =  getSharedPreferences("config", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("mIsFirstIn", false);
+        editor.commit();
+    }
+
+    private void startHomeActivity() {
+        Intent intent = new Intent(GuideActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
