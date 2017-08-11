@@ -18,7 +18,7 @@ public class SplashActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case GO_GUIDE:
-                    startHomeActivity();
+                    startGuideActivity();
                     break;
                 case GO_HOME:
                     startHomeActivity();
