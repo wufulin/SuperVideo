@@ -14,7 +14,7 @@ import com.xzy.myapplication.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    private Toolbar mToolBar;
+    protected Toolbar mToolBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
